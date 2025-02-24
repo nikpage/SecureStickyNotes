@@ -1,0 +1,8 @@
+{
+  "identifier": "com.example.snstickynotes",
+  "name": "Sticky Notes",
+  "content_type": "SN|Component",
+  "area": "editor-editor",
+  "version": "1.0.0",
+  "url": "/index.html"
+}

@@ -1,0 +1,13 @@
+#note-editor {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 300px;
+  height: 200px;
+  resize: both;
+  overflow: auto;
+  background-color: #ffff99;
+  border: 1px solid #cccccc;
+  padding: 10px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+}
