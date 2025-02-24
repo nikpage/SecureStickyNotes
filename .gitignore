@@ -1,0 +1,8 @@
+# Encryption keys and notes
+*.key
+*.enc
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class

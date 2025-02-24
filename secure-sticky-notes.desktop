@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Secure Sticky Notes
+Comment=Encrypted sticky notes
+Exec=/home/nik/repos/SNStickyNotes/main.py
+Icon=accessories-text-editor
+Terminal=false
+Type=Application
+Categories=Utility;TextEditor;
+StartupNotify=true
