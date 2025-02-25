@@ -1,9 +1,9 @@
 [Desktop Entry]
 Name=Secure Sticky Notes
-Comment=Encrypted sticky notes
-Exec=/home/nik/repos/SNStickyNotes/main.py
-Icon=accessories-text-editor
+Comment=Encrypted sticky notes with spreadsheet support
+Exec=python3 /home/nik/repos/SecureStickyNotes/main.py
+Icon=/home/nik/repos/SecureStickyNotes/icons/sticky-note.svg
 Terminal=false
 Type=Application
-Categories=Utility;TextEditor;
+Categories=Utility;Office;
 StartupNotify=true
