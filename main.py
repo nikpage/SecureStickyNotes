@@ -48,7 +48,7 @@ class StickyNoteWindow(Gtk.Window):
 
         # Add a button to the header bar
         note_manager_button = Gtk.Button()
-        note_manager_image = Gtk.Image.new_from_icon_name("view-grid-symbolic", Gtk.IconSize.BUTTON)
+        note_manager_image = Gtk.Image.new_from_icon_name("folder-symbolic", Gtk.IconSize.BUTTON)
         note_manager_button.add(note_manager_image)
         note_manager_button.set_tooltip_text("Manage Notes")
         note_manager_button.get_style_context().add_class("suggested-action")
@@ -83,10 +83,64 @@ class StickyNoteWindow(Gtk.Window):
         # Set up CSS styling
         css_provider = Gtk.CssProvider()
         css_provider.load_from_data(b"""
+            .titlebar { 
+                background: linear-gradient(to bottom, #4a90d9, #357abd);
+                font-size: 14pt;
+                font-weight: 300;  
+                color: #1a1a1a;    
+            }
+            .titlebar button { 
+                color: white; 
+                min-width: 24px;
+                min-height: 24px;
+                background: transparent;
+                border: none;
+                border-radius: 12px;
+                transition: all 250ms ease-in-out;
+            }
+            .titlebar button:hover { 
+                background: rgba(255, 255, 255, 0.2);
+            }
+            .titlebar button image { 
+                color: white;
+                -gtk-icon-effect: none;
+                background: transparent;
+            }
+            .titlebar button:hover image {
+                color: rgba(255, 255, 255, 0.9);
+            }
+            .delete-button {
+                background: transparent;
+                border: none;
+                padding: 4px;
+                border-radius: 12px;
+                transition: all 250ms ease-in-out;
+            }
+            .delete-button:hover {
+                background: rgba(255, 0, 0, 0.1);
+            }
+            .delete-button image {
+                color: #ff0000;
+                background: transparent;
+            }
             .view { font-family: Sans; font-size: 12pt; }
-            .titlebar { background: linear-gradient(to bottom, #4a90d9, #357abd); }
-            .titlebar button { color: white; }
-            .suggested-action { background: #2ecc71; color: white; }
+            .new-note-button { 
+                background: #4a90d9;
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                border: none;
+                transition: all 250ms ease-in-out;
+            }
+            .new-note-button:hover { 
+                background: #5aa0e9;
+            }
+            .suggested-action { 
+                background: #2ecc71; 
+                color: white;
+                padding: 8px 16px;   
+                border-radius: 4px;
+            }
         """)
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
@@ -266,6 +320,22 @@ class NoteManagerDialog(Gtk.Dialog):
         vbox.set_vexpand(True)
         vbox.set_valign(Gtk.Align.FILL)
         
+        # Add New Note button at the top
+        new_note_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        new_note_box.set_margin_top(10)
+        new_note_box.set_margin_bottom(10)
+        new_note_box.set_margin_start(10)
+        new_note_box.set_margin_end(10)
+        new_note_box.set_halign(Gtk.Align.END)  # Align to right
+        
+        new_note_button = Gtk.Button()
+        new_note_button.set_label("New Note")
+        new_note_button.get_style_context().add_class("new-note-button")  
+        new_note_button.connect('clicked', self.on_new_note_clicked)
+        new_note_box.pack_end(new_note_button, False, False, 0)  # Pack at end with False to not expand
+        
+        vbox.pack_start(new_note_box, False, False, 0)
+        
         # Create list box for notes with styling
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -321,7 +391,7 @@ class NoteManagerDialog(Gtk.Dialog):
                 delete_button = Gtk.Button()
                 delete_image = Gtk.Image.new_from_icon_name("user-trash-symbolic", Gtk.IconSize.BUTTON)
                 delete_button.add(delete_image)
-                delete_button.get_style_context().add_class("destructive-action")
+                delete_button.get_style_context().add_class("delete-button")
                 delete_button.connect('clicked', self.on_delete_clicked, file)
                 hbox.pack_end(delete_button, False, False, 0)
                 
@@ -343,14 +413,21 @@ class NoteManagerDialog(Gtk.Dialog):
             transient_for=self,
             flags=0,
             message_type=Gtk.MessageType.QUESTION,
-            buttons=Gtk.ButtonsType.YES_NO,
-            text=f"Delete {filename}?"
+            buttons=Gtk.ButtonsType.OK_CANCEL,
+            text="Delete Note?"
         )
+        dialog.format_secondary_text("This action cannot be undone.")
+        dialog.get_widget_for_response(Gtk.ResponseType.OK).get_style_context().add_class("destructive-action")
         response = dialog.run()
-        if response == Gtk.ResponseType.YES:
+
+        if response == Gtk.ResponseType.OK:
             os.remove(filename)
             self.refresh_notes()
         dialog.destroy()
+    
+    def on_new_note_clicked(self, button):
+        win = StickyNoteWindow()
+        win.show_all()
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
